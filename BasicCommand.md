@@ -35,6 +35,50 @@ Trong đó:
 ![Imgur](https://i.imgur.com/fc6nwUS.png)
 
 Lệnh này sẽ hiển thị nội dung của tệp /etc/passwd, trong đó chứa thông tin về các người dùng trong hệ thống. Mỗi dòng trong tệp này đại diện cho một người dùng và các thông tin liên quan như tên người dùng, ID người dùng, ID nhóm, thư mục home, shell mặc định, v.v.
+- Các tùy chọn phổ biến của lệnh **useradd**
+
+	- -c hoặc --comment: Cho phép bạn thêm một comment hoặc thông tin về người dùng. Thông tin này thường là thông tin mô tả về người dùng.
+
+	- -d hoặc --home: Đặt thư mục home cho người dùng. Thư mục này là nơi mà người dùng sẽ đăng nhập khi họ truy cập vào hệ thống.
+
+	- -g hoặc --gid: Xác định ID nhóm cho người dùng. Người dùng sẽ thuộc nhóm có ID này.
+
+	- -G hoặc --groups: Xác định các nhóm bổ sung mà người dùng sẽ thuộc vào.
+
+	- -s hoặc --shell: Xác định shell mặc định cho người dùng. Shell là môi trường dòng lệnh mà người dùng sẽ sử dụng khi đăng nhập.
+
+	- -u hoặc --uid: Đặt User ID (UID) cho người dùng. Đây là số duy nhất xác định người dùng trong hệ thống.
+
+	- -m hoặc --create-home: Tạo thư mục home cho người dùng nếu nó chưa tồn tại.
+
+	- -e hoặc --expiredate: Xác định ngày hết hạn của tài khoản người dùng. Sau ngày này, tài khoản sẽ không thể đăng nhập được nữa.
+
+** Xóa người dùng **
+- Câu lệnh: `# userdel username`
+- Nếu muốn xóa cả thử mục người dùng thêm tùy chọn **-r**: `# userdel -r username`
+- Các tùy chọn phổ biến của lệnh **userdel**:
+	- -r hoặc --remove: Tùy chọn này xóa cả thư mục home của người dùng và dữ liệu liên quan. Nếu không sử dụng tùy chọn này, thư mục home sẽ không bị xóa ngay cả khi người dùng bị xóa.
+
+	- -f hoặc --force: Tùy chọn này buộc xóa người dùng ngay cả khi có các quá trình hoặc phiên đăng nhập đang hoạt động bởi người dùng đó.
+
+** Thay đổi các thuộc tính của người dùng **
+Lệnh **usermod** trong Linux được sử dụng để thay đổi các thuộc tính của người dùng đã tồn tại trên hệ thống. Dưới đây là một số tùy chọn phổ biến của lệnh usermod:
+
+- -c, --comment COMMENT: Thêm hoặc chỉnh sửa comment hoặc thông tin mô tả về người dùng.
+
+- -d, --home HOME_DIR: Thay đổi thư mục home của người dùng.
+
+- -g, --gid GROUP: Thay đổi nhóm chính của người dùng.
+
+- -G, --groups GROUPS: Thay đổi các nhóm bổ sung mà người dùng thuộc vào.
+
+- -s, --shell SHELL: Thay đổi shell mặc định của người dùng (shell là môi trường dòng lệnh mà người dùng sử dụng khi đăng nhập).
+
+- -u, --uid UID: Thay đổi User ID (UID) của người dùng.
+
+- -l, --login NEW_LOGIN: Đổi tên đăng nhập của người dùng.
+
+Ví dụ: `# usermod -c "New comment" -d /newhome -g newgroup -G group1,group2 -s /bin/bash -u 1001 -l newusername oldusername`
 
 ## Hiển thị các tiến trình đang chạy
 - Lệnh top trong Unix/Linux được sử dụng để hiển thị danh sách các tiến trình đang chạy và thông tin về tài nguyên hệ thống như CPU, bộ nhớ, thời gian hoạt động
