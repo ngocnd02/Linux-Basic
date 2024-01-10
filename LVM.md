@@ -22,7 +22,7 @@ Logical Volume Management (LVM) là một công cụ quản lý không gian lưu
 
 **Tạo Physical Volumes (PVs), Volume Groups (VGs) và Logical Volumes (LVs)**
 
-1. Xác định ổ đĩa hoặc phân vùng để sử dụng
+**1. Xác định ổ đĩa hoặc phân vùng để sử dụng**
 - Câu lệnh: `# fdisk -l`
 - **fdisk** là một câu lệnh quản lý ổ đĩa. 
 - Các thông số đầu ra trong lệnh `fdisk -l`:
@@ -61,7 +61,7 @@ LINK
 
 	- **q**: Thoát khỏi fdisk mà không lưu thay đổi.
 
-2. Tạo Physical Volumes
+**2. Tạo Physical Volumes**
 - Câu lệnh: `# pvcreate /dev/sdX`
 - Lệnh này sẽ tạo một Physical Volumes trên thiết bị đĩa /dev/sdX
 - Các tùy chọn phổ biến lệnh **pvcreate**
@@ -77,8 +77,18 @@ LINK
 	**--dataalignment <number>[:physical|none]**: Thiết lập định vị dữ liệu (data alignment) cho Physical Volume.
 
 	**--labelsector <number>**: Chỉ định sector bắt đầu cho dấu vết metadata của LVM.
+
+**Lệnh xóa một PV**
+Lệnh **pvremove** trong Linux được sử dụng để xóa một physical volume (PV) khỏi hệ thống LVM (Logical Volume Manager)
+- Câu lệnh: `# pvremove <physical volume>`
+
+**Lệnh thay đổi kích thước**
+Lệnh **pvresize** trong Linux được sử dụng để thay đổi kích thước của một physical volume (PV) trong Logical Volume Manager (LVM)
+- Câu lệnh: `# pvresize < physical volume>`
+- Ví dụ: `# pvresize /dev/sda
+
 3. Tạo Volume Groups
-- Câu lệnh: `sudo vgcreate vg_name /dev/sdX `
+- Câu lệnh: `# vgcreate vg_name /dev/sdX `
 - Tạo ra một Volume Group có tên vg_name từ Physical Volume trên thiết bị /dev/sdX
 - Thay vg_name bằng tên của Volume Group và /dev/sdX bằng ổ đĩa đã tạo PV trên
 - Các tùy chọn phổ biến cho lệnh **vgcreate**:
@@ -91,6 +101,25 @@ LINK
 
 	- **--physicalextentsize <size>**: Xác định kích thước PE cho VG.
 
+**Mở rộng một VG**
+- Lệnh vgextend trong Linux được sử dụng để mở rộng (extend) một volume group (VG) bằng cách thêm một hoặc nhiều physical volumes (PV) mới vào VG đó.
+- Câu lệnh: `# vgextend <tên-vG> <PV>`
+- Ví dụ: `# vgextend vg_name /dev/sd`
+
+**Xóa một Volume Group**
+- Lệnh **vgremove** trong Linux được sử dụng để xóa hoặc gỡ bỏ một volume group (VG) khỏi hệ thống. Khi bạn không cần sử dụng VG nữa hoặc cần xóa nó để tái sử dụng không gian lưu trữ, vgremove là lệnh cần thiết.
+- Câu lệnh: `# vgremove <Tên -VG>
+- Ví dụ: `# vgremove vg_name`
+
+**Thay đổi trạng thái Volume Group**
+- Lệnh **vgchange** trong Linux được sử dụng để thay đổi trạng thái của một volume group (VG) trong Logical Volume Manager (LVM). Nó cho phép bạn điều chỉnh trạng thái của VG, chẳng hạn như bật/tắt VG, cấp quyền truy cập read-only cho VG, hoặc thực hiện các thay đổi khác.
+mam
+- Câu lệnh: `# vgchange [tùy chọn] <Tên-VG>`
+- Ví dụ: `# vgchange -xn my_vg`
+- Một số tùy chọn phổ biến của lệnh **vgchange**
+	- **-a, --available y/n**: Bật (y) hoặc tắt (n) sẵn có (available) cho VG.
+	- **-c, --clustered y/n**: Đặt trạng thái clustered cho VG.
+	- **-x, --ignorelockingfailure**: Bỏ qua lỗi liên quan đến khóa (locking).
 4. Tạo Logical Volume
 - Câu lệnh:` #lvcreate -n lv_name -L sizeG vg_name`
 - Lệnh này sẽ tạo một Logical Volume (LV) mới có tên là "my_lv" có kích thước 10GB trong Volume Group "my_vg".
@@ -191,4 +220,4 @@ Nếu bạn đã xóa tất cả các LV trong VG và muốn xóa VG:
 - Câu lệnh: `# vgremove vg_name`
 
 3. Xóa Physical Volume
-- Câu lệnh: `# sudo pvremove /dev/sdX`
+- Câu lệnh: `# pvremove /dev/sdX`
