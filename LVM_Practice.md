@@ -47,11 +47,53 @@ Trong trường hợp là 0, điều này là  không có kiểm tra file system
 Trong trường hợp là 2, điều cho biết rằng file system sẽ được sao lưu sau khi kiểm tra, nếu có.
 
 ### Cách giải quyết khi giảm dung lượng của lv. 
-Em có 2 cách giải quyết. 
-Cách 1: Nén thư mục mà lv mount tới trước khi thực hiện giảm dung lượng của lv, đồng thời unmount trước khi tiến hành giảm dung lượng
+- Để có thể tránh mất mát dữ liệu khi giảm dung lượng của LV ta sẽ phải thực hiện sao lưu dữ liệu.
+- Ví dụ này thực hiện trên **/dev/myvg/mylv1** và được mount tại thư mục **/data**. Sử dụng câu lệnh **df -h** để kiểm tra
 
-![Imgur](https://i.imgur.com/c2po2qf.png)
+![Imgur](https://i.imgur.com/OsobO0S.png)
 
-Cách 2: Tạo snapshot của lv muốn giảm dung lượng, lúc đó ta sẽ tạo ra 1 bản sao của lv trước và tại thời điểm thực hiện snapshot.
+- Trước tiên ta tạo 1 thư mục có tên **doucment** bên trong có file **introduction.txt** trong thư mục **/data** để giả sử có tồn tại dữ liệu trong thư mục /data. 
 
-![Imgur](https://i.imgur.com/Mqm0gyR.png)
+![Imgur](https://i.imgur.com/l52iuNc.png)
+
+![Imgur](https://i.imgur.com/fK25R09.png)
+
+- Và để tránh sự mất mát dữ liệu sau khi giảm dung lượng lv, ta cần sao lưu dữ liệu với **taz**
+Câu lệnh: `# taz -czvf mylv1_backup.tar.gz data`
+Lệnh trên sẽ tạo một bản sao lưu của dữ liệu trong thư mục /data và lưu vào một tập tin nén mylv1_backup.tar.gz
+
+![Imgur](https://i.imgur.com/j8kCaOX.png)
+
+- Ta tiến hành umount thư mục
+Câu lệnh: `umount /data`
+
+- Thực hiện giảm dung lượng 
+Câu lệnh: `# lvreduce -L -5G /dev/myvg/mylv1
+
+- Sau đó dùng lệnh resize2fs sẽ điều chỉnh kích thước của hệ thống phản ảnh sự giảm dung lượng của lv
+Câu lệnh: `# resize2fs /dev/myvg/mylv1
+
+![Imgur](https://i.imgur.com/ePDytFl.png)
+
+- Ở trên khi ta dùng lệnh **df -h** ta đã thấy kích thước của lv1 là 25G, sau khi thực hiện giảm kích thước của lv đi 5G ta dùng lệnh **lvs** để kiểm chứng xem dung lượng của lv đã được giảm xuống còn 20G
+
+![Imgur](https://i.imgur.com/kUAPQzU.png)
+
+![Imgur](https://i.imgur.com/FOrhRxD.png)
+
+- Sau đó ta tiến hành mount lại /dev/myvg/mylv1 vào thư mục /data  
+
+- Ta thấy xuất hiện lỗi k thể mount lại vào thư mục /data, lúc này ta tiến hành dùng **mkfs** để định dạng lại file hệ thống. Tuy nhiên việc định dạng lại file hệ thống này sẽ khiến lv mất toàn bộ dữ liệu. 
+
+![Imgur](https://i.imgur.com/3hdjis7.png)
+
+![Imgur](https://i.imgur.com/aPzdbxZ.png)
+
+- Sau đó ta thực hiện mount lại
+Câu lệnh: mount /dev/myvg/mylv1	/data
+
+![Imgur](https://i.imgur.com/bojr2ZN.png)
+
+- Lúc này ta vào lại thư mục /data và thấy dữ liệu ta tạo đã bị mất. Tuy nhiên ta vẫn còn file nén dữ liệu trước khi thực hiện giảm lv được lưu trong /. giúp ta có thể lấy lại dữ liệu.
+
+![Imgur](https://i.imgur.com/QkvwKuI.png)
