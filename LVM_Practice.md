@@ -20,6 +20,8 @@
 
 ### Cấu hình trong file /etc/fstab để khi reboot lại hệ thống các file mount của lv không bị mất
 
+- Chúng ta dùng các trình soạn thảo như vi để mở /etc/fstab và cấu hình trong file này. 
+
 ![Imgur](https://i.imgur.com/sCmHWXT.png)
 
 **Giải thích câu lệnh trong file /etc/fstab**
@@ -97,3 +99,23 @@ Câu lệnh: mount /dev/myvg/mylv1	/data
 - Lúc này ta vào lại thư mục /data và thấy dữ liệu ta tạo đã bị mất. Tuy nhiên ta vẫn còn file nén dữ liệu trước khi thực hiện giảm lv được lưu trong /. giúp ta có thể lấy lại dữ liệu.
 
 ![Imgur](https://i.imgur.com/QkvwKuI.png)
+
+
+**Các trường hợp khi dùng lvreduce có thể không bị mất dữ liệu**
+
+**1.Dung lượng sử dụng của LV không vượt quá dung lượng mới mong muốn**:
+Nếu dung lượng sử dụng của LV không vượt quá dung lượng mới bạn muốn thiết lập, bạn có thể giảm dung lượng mà không gặp phải mất dữ liệu.
+
+**2.Dữ liệu trên LV không nằm trong khoảng dung lượng bị giảm**:
+Lệnh lvreduce thường chỉ hoạt động nếu không có dữ liệu nằm trong khoảng dung lượng bị giảm. Nếu có dữ liệu nằm trong khoảng đó, bạn sẽ nhận được cảnh báo và phải xác nhận rằng bạn chấp nhận mất dữ liệu.
+
+**Các trường hợp không thể giảm dung lượng của Logical Volume mà không bị mất dữ liệu**
+
+**1.Dữ liệu nằm trong khoảng dung lượng giảm**:
+Nếu có bất kỳ dữ liệu nào nằm trong khoảng dung lượng bạn muốn giảm của LV, thì thường không thể giảm dung lượng mà không mất dữ liệu. Việc giảm dung lượng trong trường hợp này sẽ gây mất dữ liệu nằm trong khoảng cắt đi.
+
+**2.Dung lượng mới không đủ để chứa dữ liệu hiện tại**:
+Nếu dung lượng mới của LV không đủ để chứa toàn bộ dữ liệu hiện tại, bạn không thể giảm dung lượng mà không làm mất dữ liệu.
+
+**3.Snapshot đang tồn tại**:
+Nếu có snapshot tồn tại trên LV, bạn cũng không thể giảm dung lượng của LV gốc. Bạn cần xóa snapshot trước khi thay đổi dung lượng.
